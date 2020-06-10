@@ -44,10 +44,7 @@ def compareTwoRegSlopes(x1, y1, x2, y2, alpha=0.05, tail_type="both"):
           
     Reference: http://www.real-statistics.com/regression/hypothesis-testing-significance-regression-line-slope/comparing-slopes-two-independent-samples/
     """
-    result = {}
-    result['n1'] = len(x1)
-    result['n2'] = len(x2)
-    result['w0_1'] = trainLinear(x1, y1)[0][0]
+    result = {'n1': len(x1), 'n2': len(x2), 'w0_1': trainLinear(x1, y1)[0][0]}
     result['w0_2'] = trainLinear(x2, y2)[0][0]
     result['w1_1'] = trainLinear(x1, y1)[1][0]
     result['w1_2'] = trainLinear(x2, y2)[1][0]
@@ -69,14 +66,17 @@ def compareTwoRegSlopes(x1, y1, x2, y2, alpha=0.05, tail_type="both"):
     result['t_stat'] = (result['w1_1'] - result['w1_2']) / \
                        result['s_slope_diff']
     result['df'] = result['n1'] + result['n2'] - 4
-    if tail_type == 'right':
+    if tail_type == 'both':
+        result['p_val'] = ss.t.cdf(result['t_stat'], result['df'])
+        result['p_val'] += result['p_val']
+        result['sig'] = (result['p_val'] <= alpha)
+
+    elif tail_type == 'right':
         result['p_val'] = 1 - ss.t.cdf(abs(result['t_stat'], result['df']))
     else:
         result['p_val'] = ss.t.cdf(result['t_stat'], result['df'])
-        if tail_type == 'both':
-            result['p_val'] += result['p_val']
         result['sig'] = (result['p_val'] <= alpha)
-    
+
     return result
     
 def loadTestData():
