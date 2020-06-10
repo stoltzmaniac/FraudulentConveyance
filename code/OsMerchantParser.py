@@ -36,8 +36,8 @@ def main():
     """
     data_dir = sys.argv[1]  # first arg should be path to data dir
     data_files = os.listdir(data_dir)
-    for i in range(len(data_files)):
-        file = data_files[i]
+    for data_file in data_files:
+        file = data_file
         report_dict = getOsReportInfo(file)
         try:
             path = data_dir + file
@@ -132,11 +132,9 @@ def getMonthFromFileName(file_name):
     return int(file_name[5:7])
     
 def getOsReportInfo(file_name):
-    result = dict(isoNum = getIsoNumFromFileName(file_name),
+    return dict(isoNum = getIsoNumFromFileName(file_name),
                   reportYear = getYearFromFileName(file_name),
                   reportMonth = getMonthFromFileName(file_name))
-    
-    return result
     
 def parseBusinessName(raw_osm):
     """ Returns the business name of raw OS merchant. The business name is
@@ -170,11 +168,10 @@ def parsePhone(raw_osm):
     raw_osm - raw os merchant record
     """
     phone_part = raw_osm[0].split(phoneToken)
-    if(len(phone_part) > 1):
-        phone_part = phone_part[1].split(",")[0].strip()
-    else: 
-        phone_part = ""
-        
+    phone_part = (
+        phone_part[1].split(",")[0].strip() if (len(phone_part) > 1) else ""
+    )
+
     return phone_part.strip()
     
 def parseAddress(raw_osm):
@@ -193,9 +190,7 @@ def parseCity(raw_osm):
     
     raw_osm - raw os merchant record
     """
-    city_part = raw_osm[2].split(",")[0].strip()
-    
-    return city_part
+    return raw_osm[2].split(",")[0].strip()
     
 def parseProvince(raw_osm):
     """ Returns the province field of raw OS merchant. The province
@@ -203,9 +198,7 @@ def parseProvince(raw_osm):
     
     raw_osm - raw os merchant record
     """
-    prov_part = raw_osm[2].split(",")[1].strip()
-    
-    return prov_part
+    return raw_osm[2].split(",")[1].strip()
     
 def parsePostalCode(raw_osm):
     """ Returns the postal code field of raw OS merchant. The postal code
@@ -242,14 +235,10 @@ def parseMerchantId(raw_osm):
     return mid_part
     
 def parseSiteId(raw_osm):
-    sid_part = raw_osm[3].split(siteToken)[1].strip()
-    
-    return sid_part
+    return raw_osm[3].split(siteToken)[1].strip()
     
 def parseTerminalId(raw_osm):
-    terminal_part = raw_osm[4].split(terminalToken)[1].strip()
-    
-    return terminal_part
+    return raw_osm[4].split(terminalToken)[1].strip()
     
 def loadMerchantInfo(raw_osm):
     """ Returns a dictionary populated with all the merchant information
@@ -257,8 +246,7 @@ def loadMerchantInfo(raw_osm):
     
     raw_osm - raw os merchant record
     """
-    merchant = {}
-    merchant['busName'] = parseBusinessName(raw_osm)
+    merchant = {'busName': parseBusinessName(raw_osm)}
     merchant['corpName'] = parseCorporateName(raw_osm)
     merchant['contact'] = parseContact(raw_osm)
     merchant['phone'] = parsePhone(raw_osm)
@@ -270,7 +258,7 @@ def loadMerchantInfo(raw_osm):
     merchant['merchantId'] = parseMerchantId(raw_osm)
     merchant['siteId'] = parseSiteId(raw_osm)
     merchant['terminalId'] = parseTerminalId(raw_osm)
-    
+
     return merchant
     
 def testGetRawMerchantRecords(lines):

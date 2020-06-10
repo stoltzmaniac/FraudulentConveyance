@@ -92,19 +92,26 @@ class OsMerchantReportRecord:
         return self._terminalId
     
     def asTuple(self):
-        osm_tuple = (self._busName, self._corpName, self._contact,
-                     self._phone, self._address, self._city,
-                     self._province, self._postalCode, self._timeZone,
-                     self._merchantId, self._siteId, self._terminalId,
-                     self._isoNum, self._reportYear, self._reportMonth)
-                       
-        return osm_tuple
+        return (
+            self._busName,
+            self._corpName,
+            self._contact,
+            self._phone,
+            self._address,
+            self._city,
+            self._province,
+            self._postalCode,
+            self._timeZone,
+            self._merchantId,
+            self._siteId,
+            self._terminalId,
+            self._isoNum,
+            self._reportYear,
+            self._reportMonth,
+        )
     
     def toString(self):
-        osm_fields = []
-        for item in self.asTuple():
-            osm_fields.append(str(item))
-        
+        osm_fields = [str(item) for item in self.asTuple()]
         return ",".join(osm_fields)
 
 # if "__name__" == "__main__" : main()
